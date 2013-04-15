@@ -4,6 +4,8 @@
  */
 package matcheffect.cards;
 
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import javax.swing.JPanel;
 import matcheffect.GameBoard;
 
@@ -39,7 +41,23 @@ public class NormalCard implements Card{
      * Clears any previous listeners on our jPanel object and adds our new one that calls doAction()
      */
     public void createAndSetEventListener() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        for(MouseListener ml : this.myJPanel.getMouseListeners())
+            this.myJPanel.removeMouseListener(ml); 
+        MouseListener myListener = new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                doAction();
+            }
+            @Override
+            public void mousePressed(MouseEvent e) {}
+            @Override
+            public void mouseReleased(MouseEvent e) {}
+            @Override
+            public void mouseEntered(MouseEvent e) {}
+            @Override
+            public void mouseExited(MouseEvent e) {}
+        };
+        this.myJPanel.addMouseListener(myListener);
     }
     
 }
