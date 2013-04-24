@@ -3,6 +3,8 @@ package matcheffect;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -63,19 +65,31 @@ public class GameBoard extends javax.swing.JFrame {
      */
     public void generateAndPlaceCards()
     {
-        for(int i = 0; i < 11; i++)
+        
+        ArrayList<NormalTypes> availableTypes = new ArrayList<NormalTypes>(Arrays.asList(NormalTypes.values()));
+            
+        availableTypes.addAll(availableTypes);
+        
+        Collections.shuffle(availableTypes);
+        
+        for(int i = 0; i < 22; i++)
         {
-            JPanel p = new JPanel();
-            //JLabel lbl = new JLabel();
-            //lbl.setBounds(0,0,0,0);
-            //lbl.setIcon(new ImageIcon("icon.jpg"));
-            //p.add(lbl);
-            NormalCard card = new NormalCard(NormalTypes.STAR, p);
             
-            myCards.add(card);
             
-            gamePanel.add(p);
+            NormalTypes type = availableTypes.remove(0);
+            
+            CardPanel p = new CardPanel(type.getImageLoc());
+            
+            NormalCard card = new NormalCard(type, p);
+
+            myCards.add(card);   
         }
+        
+        Collections.shuffle(myCards);
+        
+        for(Card card : myCards)
+            gamePanel.add(card.getCardPanel());
+        
         gamePanel.setBorder(null);
         //throw new UnsupportedOperationException();
     }
@@ -155,7 +169,6 @@ public class GameBoard extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(2, 2, 2));
         setForeground(new java.awt.Color(204, 204, 204));
-        setResizable(false);
 
         infoPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
@@ -163,11 +176,11 @@ public class GameBoard extends javax.swing.JFrame {
         infoPanel.setLayout(infoPanelLayout);
         infoPanelLayout.setHorizontalGroup(
             infoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 177, Short.MAX_VALUE)
+            .addGap(0, 171, Short.MAX_VALUE)
         );
         infoPanelLayout.setVerticalGroup(
             infoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 599, Short.MAX_VALUE)
         );
 
         gamePanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -180,9 +193,9 @@ public class GameBoard extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(gamePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(infoPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(gamePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 598, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(infoPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(

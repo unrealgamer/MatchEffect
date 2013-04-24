@@ -10,7 +10,7 @@ import matcheffect.*;
 public abstract class SpecialCard implements Card {
     private String strMyImageLoc;
     private GameBoard myGameBoard;
-    private JPanel myJPanel;
+    private CardPanel myCardPanel;
     
     
     @Override
@@ -28,4 +28,8 @@ public abstract class SpecialCard implements Card {
     @Override
     public abstract void doAction();
 
+    @Override
+    public CardPanel getCardPanel() {
+        return myCardPanel;
+    }
 }

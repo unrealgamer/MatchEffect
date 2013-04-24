@@ -17,18 +17,20 @@ public class NormalCard implements Card{
 
     private NormalTypes myType;   
     private GameBoard myGameBoard;
-    private JPanel myJPanel;
+    private CardPanel myCardPanel;
     
     
-    public NormalCard(NormalTypes myType, JPanel myJPanel)
+    public NormalCard(NormalTypes myType, CardPanel myCardPanel)
     {
         this.myType = myType;
-        this.myJPanel = myJPanel;
+        this.myCardPanel = myCardPanel;
+        createAndSetEventListener();
     }
     
     @Override
     public void doAction() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        System.out.println(myType.getImageLoc());
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
@@ -41,8 +43,8 @@ public class NormalCard implements Card{
      * Clears any previous listeners on our jPanel object and adds our new one that calls doAction()
      */
     public void createAndSetEventListener() {
-        for(MouseListener ml : this.myJPanel.getMouseListeners())
-            this.myJPanel.removeMouseListener(ml); 
+        for(MouseListener ml : this.myCardPanel.getMouseListeners())
+            this.myCardPanel.removeMouseListener(ml); 
         MouseListener myListener = new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -57,7 +59,13 @@ public class NormalCard implements Card{
             @Override
             public void mouseExited(MouseEvent e) {}
         };
-        this.myJPanel.addMouseListener(myListener);
+        this.myCardPanel.addMouseListener(myListener);
+    }
+    
+    
+    public CardPanel getCardPanel()
+    {
+        return this.myCardPanel;
     }
     
 }
