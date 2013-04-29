@@ -5,7 +5,7 @@ package matcheffect.cards;
  * @author Shane
  */
 public enum NormalTypes {
-    RED("icon.jpg", 50),
+    RED("location", 50),
     ORANGE("YGBKM.jpg", 100),
     YELLOW("location", 50),
     GREEN("Jamaican.jpg", 100),

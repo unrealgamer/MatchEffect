@@ -21,8 +21,9 @@ public class CardPanel extends JPanel {
     public CardPanel(String strImagePath)
     {
         this.myLabel = new JLabel();
-        this.myLabel.setBounds(0,0,0,0);
+        this.myLabel.setBounds(0, 0, 0, 0);
         this.myLabel.setIcon(new ImageIcon(strImagePath));
+        this.setBounds(0, 0, 100, 100);
         this.add(myLabel);
     }
     

@@ -12,8 +12,7 @@ public class FiredUpCard extends SpecialCard
 {
     public FiredUpCard()
     {
-        
-        
+      this.myCardPanel = new CardPanel("icon.jpg");
     }
     
     /**

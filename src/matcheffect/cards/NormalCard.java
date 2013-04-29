@@ -29,8 +29,7 @@ public class NormalCard implements Card{
     
     @Override
     public void doAction() {
-        System.out.println(myType.getImageLoc());
-        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override

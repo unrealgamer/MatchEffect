@@ -8,9 +8,9 @@ import matcheffect.*;
  * @author Shane
  */
 public abstract class SpecialCard implements Card {
-    private String strMyImageLoc;
-    private GameBoard myGameBoard;
-    private CardPanel myCardPanel;
+    protected String strMyImageLoc;
+    protected GameBoard myGameBoard;
+    protected CardPanel myCardPanel;
     
     
     @Override
