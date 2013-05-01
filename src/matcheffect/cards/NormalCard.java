@@ -18,23 +18,26 @@ public class NormalCard implements Card{
     private NormalTypes myType;   
     private GameBoard myGameBoard;
     private CardPanel myCardPanel;
+    private boolean blnMyIsMatched;
     
     
-    public NormalCard(NormalTypes myType, CardPanel myCardPanel)
+    public NormalCard(GameBoard theGameBoard, NormalTypes myType, CardPanel myCardPanel)
     {
         this.myType = myType;
         this.myCardPanel = myCardPanel;
+        this.myGameBoard = theGameBoard;
+        this.blnMyIsMatched = false;
         createAndSetEventListener();
     }
     
     @Override
     public void doAction() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        myGameBoard.checkCardMatch(this);
     }
 
     @Override
-    public void flipOver() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void flipOver(boolean toFront) {
+        myCardPanel.setVisible(!toFront);
     }
 
     @Override
@@ -61,10 +64,24 @@ public class NormalCard implements Card{
         this.myCardPanel.addMouseListener(myListener);
     }
     
+    public boolean isMatched()
+    {
+        return this.blnMyIsMatched;
+    }
+    
+    public void setIsMatched(boolean isMatched)
+    {
+        this.blnMyIsMatched = isMatched;
+    }
     
     public CardPanel getCardPanel()
     {
         return this.myCardPanel;
+    }
+    
+    public NormalTypes getType()
+    {
+        return this.myType;
     }
     
 }

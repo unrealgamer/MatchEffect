@@ -14,7 +14,7 @@ public abstract class SpecialCard implements Card {
     
     
     @Override
-    public void flipOver()
+    public void flipOver(boolean toFront)
     {
     }
     

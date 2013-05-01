@@ -7,7 +7,7 @@ package matcheffect.cards;
 public interface Card {
     
     public void doAction();
-    public void flipOver();
+    public void flipOver(boolean toFront);
     public void createAndSetEventListener();
     public CardPanel getCardPanel();
 }

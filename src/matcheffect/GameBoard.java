@@ -1,13 +1,9 @@
 package matcheffect;
 
-import java.awt.Color;
-import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
+import java.util.Random;
 import matcheffect.cards.*;
 
 /**
@@ -20,6 +16,7 @@ public class GameBoard extends javax.swing.JFrame {
     
     private int intMyScore;
     private int intMyDifficulty;
+    private int intMyCardsMatched;
     
     private String strMyUserName;
     
@@ -27,7 +24,7 @@ public class GameBoard extends javax.swing.JFrame {
     
     private ArrayList<Card> myCards;
     
-    private Card myPreviousCard;
+    private NormalCard myPreviousCard;
     
     public GameBoard() 
     {
@@ -56,6 +53,8 @@ public class GameBoard extends javax.swing.JFrame {
         
         generateAndPlaceCards();
         
+        this.lblScore.setText("000000");
+        
         //throw new UnsupportedOperationException();
     }
     
@@ -78,22 +77,38 @@ public class GameBoard extends javax.swing.JFrame {
             
             CardPanel p = new CardPanel(type.getImageLoc());
             
-            NormalCard card = new NormalCard(type, p);
+            NormalCard card = new NormalCard(this, type, p);
 
             myCards.add(card);   
         }
         
+       /* Random rand = new Random();
         
-        myCards.add(new FiredUpCard());
-        myCards.add(new FiredUpCard());
-        myCards.add(new FiredUpCard());
+        for(int i = 0; i < 3; i++)
+        {
+            switch(rand.nextInt(7))
+            {
+                case 0:
+                    myCards.add(new DoublePoints());
+                case 1:
+                    myCards.add(new FiredUpCard());
+                case 2:
+                    myCards.add(new JamaicanMeCrazyCard());
+                case 3:
+                    myCards.add(new MatchDefectCard());
+                case 4:
+                    myCards.add(new MatchTimeRelayCard());
+                case 5:
+                    myCards.add(new ReeperOfTimeCard());
+                case 6:
+                    myCards.add(new YouKittenMeCard());
+            }
+        }*/
         
         Collections.shuffle(myCards);
         
         for(Card card : myCards)
             gamePanel.add(card.getCardPanel());
-        
-        
         
         gamePanel.setBorder(null);
         //throw new UnsupportedOperationException();
@@ -106,6 +121,7 @@ public class GameBoard extends javax.swing.JFrame {
     public void addScore(int intScoreToAdd)
     {
         this.intMyScore += intScoreToAdd;
+        lblScore.setText(String.valueOf(this.intMyScore));
     }
     
     /**
@@ -113,9 +129,35 @@ public class GameBoard extends javax.swing.JFrame {
      * act accordingly. If not the set this card to the previous card and continue.
      * @param theCard 
      */
-    public void checkCardMatch(Card theCard)
+    public void checkCardMatch(NormalCard theCard)
     {
-        throw new UnsupportedOperationException();
+        theCard.flipOver(true);
+        if(myPreviousCard == null)
+        {
+            myPreviousCard = theCard;
+            return;
+        }
+        
+        if(myPreviousCard == theCard)
+        {
+            return;
+        }
+        
+        if(myPreviousCard.getType().equals(theCard.getType()))
+        {
+            this.addScore(theCard.getType().getScoreToAdd());
+            myPreviousCard.setIsMatched(true);
+            theCard.setIsMatched(true);
+            this.intMyCardsMatched += 2;
+            myPreviousCard = null;
+        }
+        else
+        {
+            myPreviousCard.flipOver(false);
+            theCard.flipOver(false);
+            myPreviousCard = null;
+        }
+        
     }
     
     /**
@@ -170,7 +212,7 @@ public class GameBoard extends javax.swing.JFrame {
 
         infoPanel = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
+        lblScore = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jTextField1 = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
@@ -193,8 +235,8 @@ public class GameBoard extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         jLabel1.setText("Score:");
 
-        jLabel2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jLabel2.setText("99999999");
+        lblScore.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        lblScore.setText("99999999");
 
         jLabel3.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
         jLabel3.setText("Name:");
@@ -228,7 +270,7 @@ public class GameBoard extends javax.swing.JFrame {
                     .addGroup(infoPanelLayout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 87, Short.MAX_VALUE))
+                        .addComponent(lblScore, javax.swing.GroupLayout.DEFAULT_SIZE, 87, Short.MAX_VALUE))
                     .addComponent(jTextField1)
                     .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -244,7 +286,7 @@ public class GameBoard extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(infoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(lblScore, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -328,11 +370,11 @@ public class GameBoard extends javax.swing.JFrame {
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextField jTextField1;
+    private javax.swing.JLabel lblScore;
     // End of variables declaration//GEN-END:variables
     
     
