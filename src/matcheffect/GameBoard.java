@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 import matcheffect.cards.*;
 
 /**
@@ -16,7 +18,9 @@ public class GameBoard extends javax.swing.JFrame {
     
     private int intMyScore;
     private int intMyDifficulty;
-    private int intMyCardsMatched;
+    private int intMyCardMatches;
+    
+    private int intMyScoreToSubtractPerTick;
     
     private String strMyUserName;
     
@@ -40,7 +44,6 @@ public class GameBoard extends javax.swing.JFrame {
      */
     public void startGame(String strUserName, int intDifficulty)
     {
-        
         if(this.blnIsPlaying)
             return;
         
@@ -55,6 +58,8 @@ public class GameBoard extends javax.swing.JFrame {
         
         this.lblScore.setText("000000");
         
+        startAutoSubtractScore();
+        
         //throw new UnsupportedOperationException();
     }
     
@@ -65,7 +70,7 @@ public class GameBoard extends javax.swing.JFrame {
     public void generateAndPlaceCards()
     {
         
-        ArrayList<NormalTypes> availableTypes = new ArrayList<NormalTypes>(Arrays.asList(NormalTypes.values()));
+        ArrayList<NormalTypes> availableTypes = new ArrayList<>(Arrays.asList(NormalTypes.values()));
             
         availableTypes.addAll(availableTypes);
         
@@ -82,7 +87,7 @@ public class GameBoard extends javax.swing.JFrame {
             myCards.add(card);   
         }
         
-       /* Random rand = new Random();
+        Random rand = new Random();
         
         for(int i = 0; i < 3; i++)
         {
@@ -103,7 +108,7 @@ public class GameBoard extends javax.swing.JFrame {
                 case 6:
                     myCards.add(new YouKittenMeCard());
             }
-        }*/
+        }
         
         Collections.shuffle(myCards);
         
@@ -148,8 +153,12 @@ public class GameBoard extends javax.swing.JFrame {
             this.addScore(theCard.getType().getScoreToAdd());
             myPreviousCard.setIsMatched(true);
             theCard.setIsMatched(true);
-            this.intMyCardsMatched += 2;
+            this.intMyCardMatches++;
             myPreviousCard = null;
+            
+            if(this.intMyCardMatches >= 11)
+                endGame();
+            
         }
         else
         {
@@ -166,7 +175,18 @@ public class GameBoard extends javax.swing.JFrame {
      */
     private void startAutoSubtractScore()
     {
-        throw new UnsupportedOperationException();
+        Timer autoTimer = new Timer("AutoSubtract");
+        
+        
+        this.intMyScoreToSubtractPerTick = -50;
+        
+        ScoreTimer task = new ScoreTimer(this){
+            @Override
+            public void run() {
+                this.getBoard().addScore(this.getBoard().getScoreToSubtract());
+            }
+        };
+        autoTimer.scheduleAtFixedRate(task, 0, 1000);
     }
     
     /**
@@ -189,11 +209,12 @@ public class GameBoard extends javax.swing.JFrame {
     }
     
     /**
-     * Called when the score in the timer thread drops to or below zero. Then stops the game and calculates the score.
+     * Called when the score in the timer thread drops to or below zero or all matches are made. 
+     * Then stops the game and timer and calculates the score.
      */
-    private void scoreExpired()
+    private void endGame()
     {
-        throw new UnsupportedOperationException();
+        
     }
     
     /**
@@ -202,6 +223,12 @@ public class GameBoard extends javax.swing.JFrame {
     private void calculateAndShowFinalScore()
     {
         
+    }
+    
+    
+    public int getScoreToSubtract()
+    {
+        return this.intMyScoreToSubtractPerTick;
     }
     
     //<editor-fold defaultstate="collapsed" desc="UI Code">
