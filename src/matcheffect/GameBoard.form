@@ -35,7 +35,7 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="gamePanel" min="-2" pref="599" max="-2" attributes="0"/>
+              <Component id="gamePanel" pref="629" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="infoPanel" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
@@ -47,8 +47,8 @@
           <Group type="102" alignment="1" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="1" attributes="0">
-                  <Component id="gamePanel" max="32767" attributes="0"/>
-                  <Component id="infoPanel" max="32767" attributes="0"/>
+                  <Component id="gamePanel" pref="728" max="32767" attributes="0"/>
+                  <Component id="infoPanel" pref="728" max="32767" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>

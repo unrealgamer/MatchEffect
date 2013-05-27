@@ -4,16 +4,17 @@
  */
 package matcheffect.cards;
 
+import matcheffect.GameBoard;
+
 /**
  *
  * @author 1114447
  */
 public class YouKittenMeCard extends SpecialCard
 {
-    public YouKittenMeCard()
+    public YouKittenMeCard(GameBoard gameBoard)
     {
-        
-        
+       super("location", gameBoard); 
     }
     
     /**

@@ -4,6 +4,8 @@
  */
 package matcheffect.cards;
 
+import matcheffect.GameBoard;
+
 /**
  *
  * @author 1114447
@@ -13,9 +15,9 @@ public class MatchDefectCard extends SpecialCard
     /**
      *
      */
-    public MatchDefectCard()
+    public MatchDefectCard(GameBoard gameBoard)
     {
-        
+        super("location", gameBoard);
     }
     
     /**

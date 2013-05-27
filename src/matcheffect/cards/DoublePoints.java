@@ -4,6 +4,8 @@
  */
 package matcheffect.cards;
 
+import matcheffect.GameBoard;
+
 /**
  *
  * @author 1114447
@@ -14,15 +16,15 @@ public class DoublePoints extends SpecialCard
     /**
      *
      */
-    public DoublePoints()
+    public DoublePoints(GameBoard gameBoard)
     {
-        
+        super("icon.jpg", gameBoard);
     }
   
     @Override
     public void doAction() 
     {
-        
+        this.myGameBoard.addScore(10);
     }
     
 }

@@ -4,15 +4,17 @@
  */
 package matcheffect.cards;
 
+import matcheffect.GameBoard;
+
 /**
  *
  * @author 1114447
  */
 public class FiredUpCard extends SpecialCard 
 {
-    public FiredUpCard()
+    public FiredUpCard(GameBoard gameBoard)
     {
-      this.myCardPanel = new CardPanel("icon.jpg");
+      super("location", gameBoard);
     }
     
     /**

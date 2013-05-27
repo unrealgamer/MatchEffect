@@ -1,5 +1,7 @@
 package matcheffect.cards;
 
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import javax.swing.JPanel;
 import matcheffect.*;
 
@@ -14,15 +16,40 @@ public abstract class SpecialCard implements Card {
     
     
     @Override
-    public void flipOver(boolean toFront)
+    public void flipOver()
     {
+    }
+    
+    public SpecialCard(String strImageLoc, GameBoard gameBoard)
+    {
+        this.strMyImageLoc = strImageLoc;
+        this.myCardPanel = new CardPanel(this.strMyImageLoc);
+        this.myGameBoard = gameBoard;
+        createAndSetEventListener();
     }
     
     @Override
     /**
-     * Clears any previous listeners on our jPanel object and adds our new one that calls doAction()
+     * Clears any previous listeners on our Cardpanel object and adds our new one that calls doAction()
      */
     public void createAndSetEventListener() {
+        for(MouseListener ml : this.myCardPanel.getMouseListeners())
+            this.myCardPanel.removeMouseListener(ml); 
+        MouseListener myListener = new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                doAction();
+            }
+            @Override
+            public void mousePressed(MouseEvent e) {}
+            @Override
+            public void mouseReleased(MouseEvent e) {}
+            @Override
+            public void mouseEntered(MouseEvent e) {}
+            @Override
+            public void mouseExited(MouseEvent e) {}
+        };
+        this.myCardPanel.addMouseListener(myListener);
     }
     
     @Override

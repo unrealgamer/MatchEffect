@@ -4,6 +4,8 @@
  */
 package matcheffect.cards;
 
+import matcheffect.GameBoard;
+
 /**
  *
  * @author 1114447
@@ -13,9 +15,9 @@ public class MatchTimeRelayCard extends SpecialCard
     /**
      *
      */
-    public MatchTimeRelayCard()
+    public MatchTimeRelayCard(GameBoard gameBoard)
     {
-                
+            super("location", gameBoard);    
             
     }
     

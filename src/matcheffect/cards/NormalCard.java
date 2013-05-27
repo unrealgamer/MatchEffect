@@ -6,7 +6,6 @@ package matcheffect.cards;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import javax.swing.JPanel;
 import matcheffect.GameBoard;
 
 /**
@@ -32,12 +31,13 @@ public class NormalCard implements Card{
     
     @Override
     public void doAction() {
-        myGameBoard.checkCardMatch(this);
+        if(!this.isMatched() && !this.myGameBoard.getIsCheckingCards())
+            myGameBoard.checkCardMatch(this);
     }
 
     @Override
-    public void flipOver(boolean toFront) {
-        myCardPanel.setVisible(!toFront);
+    public void flipOver() {
+        myCardPanel.doFlip();
     }
 
     @Override
@@ -74,6 +74,7 @@ public class NormalCard implements Card{
         this.blnMyIsMatched = isMatched;
     }
     
+    @Override
     public CardPanel getCardPanel()
     {
         return this.myCardPanel;

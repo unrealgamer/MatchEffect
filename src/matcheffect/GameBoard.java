@@ -6,6 +6,9 @@ import java.util.Collections;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.xml.ws.spi.Invoker;
 import matcheffect.cards.*;
 
 /**
@@ -20,6 +23,8 @@ public class GameBoard extends javax.swing.JFrame {
     private int intMyDifficulty;
     private int intMyCardMatches;
     
+    private boolean blnIsDouble;
+    
     private int intMyScoreToSubtractPerTick;
     
     private String strMyUserName;
@@ -30,10 +35,12 @@ public class GameBoard extends javax.swing.JFrame {
     
     private NormalCard myPreviousCard;
     
+    private boolean blnIsCheckingCards = false;
+    
     public GameBoard() 
     {
         initComponents();
-        startGame("Test", 3);
+        startGame("Test", 1);
     }
     
     /**
@@ -42,7 +49,7 @@ public class GameBoard extends javax.swing.JFrame {
      * @param strUserName
      * @param intDifficulty 
      */
-    public void startGame(String strUserName, int intDifficulty)
+    private void startGame(String strUserName, int intDifficulty)
     {
         if(this.blnIsPlaying)
             return;
@@ -58,9 +65,7 @@ public class GameBoard extends javax.swing.JFrame {
         
         this.lblScore.setText("000000");
         
-        startAutoSubtractScore();
-        
-        //throw new UnsupportedOperationException();
+        //startAutoSubtractScore();
     }
     
     /**
@@ -94,19 +99,26 @@ public class GameBoard extends javax.swing.JFrame {
             switch(rand.nextInt(7))
             {
                 case 0:
-                    myCards.add(new DoublePoints());
+                    myCards.add(new DoublePoints(this));
+                    break;
                 case 1:
-                    myCards.add(new FiredUpCard());
+                    myCards.add(new FiredUpCard(this));
+                    break;
                 case 2:
-                    myCards.add(new JamaicanMeCrazyCard());
+                    myCards.add(new JamaicanMeCrazyCard(this));
+                    break;
                 case 3:
-                    myCards.add(new MatchDefectCard());
+                    myCards.add(new MatchDefectCard(this));
+                    break;
                 case 4:
-                    myCards.add(new MatchTimeRelayCard());
+                    myCards.add(new MatchTimeRelayCard(this));
+                    break;
                 case 5:
-                    myCards.add(new ReeperOfTimeCard());
+                    myCards.add(new ReeperOfTimeCard(this));
+                    break;
                 case 6:
-                    myCards.add(new YouKittenMeCard());
+                    myCards.add(new YouKittenMeCard(this));
+                    break;
             }
         }
         
@@ -116,7 +128,6 @@ public class GameBoard extends javax.swing.JFrame {
             gamePanel.add(card.getCardPanel());
         
         gamePanel.setBorder(null);
-        //throw new UnsupportedOperationException();
     }
     
     /**
@@ -131,42 +142,62 @@ public class GameBoard extends javax.swing.JFrame {
     
     /**
      * Checks if there is already a previous card. If there is check whether this new card matches and 
-     * act accordingly. If not the set this card to the previous card and continue.
+     * act accordingly, ending the game if necessary. If not the set this card to the previous card and continue.
      * @param theCard 
      */
-    public void checkCardMatch(NormalCard theCard)
+    public void checkCardMatch(final NormalCard theCard)
     {
-        theCard.flipOver(true);
-        if(myPreviousCard == null)
+       
+        blnIsCheckingCards = true;
+        
+        if(myPreviousCard == theCard) //Check if we clicked the same card again
         {
-            myPreviousCard = theCard;
+            blnIsCheckingCards = false;
             return;
         }
         
-        if(myPreviousCard == theCard)
+         if(myPreviousCard == null) //If this is the first of the pair we click
         {
-            return;
+            theCard.flipOver();     //Flip it over
+            myPreviousCard = theCard;  // Set it to the previous
+            blnIsCheckingCards = false;
+            return;                 //Return since we have to wait for the next card
         }
         
-        if(myPreviousCard.getType().equals(theCard.getType()))
-        {
-            this.addScore(theCard.getType().getScoreToAdd());
-            myPreviousCard.setIsMatched(true);
-            theCard.setIsMatched(true);
-            this.intMyCardMatches++;
-            myPreviousCard = null;
-            
-            if(this.intMyCardMatches >= 11)
-                endGame();
-            
-        }
-        else
-        {
-            myPreviousCard.flipOver(false);
-            theCard.flipOver(false);
-            myPreviousCard = null;
-        }
-        
+         theCard.flipOver(); //Flip this card over now becuase this must be the second click in the pair
+                             // If we dont call this now we won't visually see the card flip over it will 
+                             // just instantly change
+         
+         new Thread("Logic") // We start a new thread to handle the card checking logic and delay it about 1/2 a second so the above line can finish
+         {
+             @Override
+             public void run()
+             {
+                 try {
+                     sleep(550);   // We have to delay in a new thread or else the GUI will 'lock' up until the animation is finished and we miss it
+                 } catch (InterruptedException ex) {
+                     Logger.getLogger(GameBoard.class.getName()).log(Level.SEVERE, null, ex);
+                 }
+                if(myPreviousCard.getType().equals(theCard.getType()))
+                {
+                    addScore(theCard.getType().getScoreToAdd());
+                    myPreviousCard.setIsMatched(true);
+                    theCard.setIsMatched(true);
+                    intMyCardMatches++;
+                    myPreviousCard = null;
+
+                    if(intMyCardMatches >= 11)
+                        endGame();
+                }
+                else
+                {
+                    myPreviousCard.flipOver();
+                    theCard.flipOver();
+                    myPreviousCard = null;
+                }
+                blnIsCheckingCards = false;
+             }
+         }.start(); 
     }
     
     /**
@@ -186,7 +217,7 @@ public class GameBoard extends javax.swing.JFrame {
                 this.getBoard().addScore(this.getBoard().getScoreToSubtract());
             }
         };
-        autoTimer.scheduleAtFixedRate(task, 0, 1000);
+        autoTimer.scheduleAtFixedRate(task, 0, 2000);
     }
     
     /**
@@ -228,7 +259,12 @@ public class GameBoard extends javax.swing.JFrame {
     
     public int getScoreToSubtract()
     {
-        return this.intMyScoreToSubtractPerTick;
+        return this.intMyScoreToSubtractPerTick * intMyDifficulty;
+    }
+    
+    public boolean getIsCheckingCards()
+    {
+        return blnIsCheckingCards;
     }
     
     //<editor-fold defaultstate="collapsed" desc="UI Code">
@@ -339,7 +375,7 @@ public class GameBoard extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(gamePanel, javax.swing.GroupLayout.PREFERRED_SIZE, 599, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(gamePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 629, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(infoPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -349,8 +385,8 @@ public class GameBoard extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(gamePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(infoPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(gamePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 728, Short.MAX_VALUE)
+                    .addComponent(infoPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 728, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
