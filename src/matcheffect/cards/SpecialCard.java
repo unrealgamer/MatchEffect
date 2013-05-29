@@ -10,18 +10,22 @@ import matcheffect.*;
  * @author Shane
  */
 public abstract class SpecialCard implements Card {
+    
     protected String strMyImageLoc;
     protected GameBoard myGameBoard;
     protected CardPanel myCardPanel;
+    protected Boolean isActivated;
     
     
     @Override
     public void flipOver()
     {
+        this.myCardPanel.doFlip();
     }
     
     public SpecialCard(String strImageLoc, GameBoard gameBoard)
     {
+        this.isActivated = false;
         this.strMyImageLoc = strImageLoc;
         this.myCardPanel = new CardPanel(this.strMyImageLoc);
         this.myGameBoard = gameBoard;
@@ -58,5 +62,10 @@ public abstract class SpecialCard implements Card {
     @Override
     public CardPanel getCardPanel() {
         return myCardPanel;
+    }
+    
+    public boolean isActivated()
+    {
+        return this.isActivated;
     }
 }

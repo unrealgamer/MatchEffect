@@ -1,8 +1,10 @@
 package matcheffect;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -19,9 +21,10 @@ public class GameBoard extends javax.swing.JFrame {
     public final int intMyMaxPossibleMatches = 11;
     public final int intMyMaxCards = 25;
     
-    private int intMyScore;
+    private int intMyScore = 500;
     private int intMyDifficulty;
     private int intMyCardMatches;
+
     
     private boolean blnIsDouble;
     
@@ -37,11 +40,14 @@ public class GameBoard extends javax.swing.JFrame {
     
     private boolean blnIsCheckingCards = false;
     
+    /**
+     * Constructor
+     */
     public GameBoard() 
     {
         initComponents();
         startGame("Test", 1);
-    }
+    }//end Constructor
     
     /**
      * Starts the game with a new username and difficulty. Generate a new board and starts the 
@@ -61,11 +67,22 @@ public class GameBoard extends javax.swing.JFrame {
         
         this.myCards = new ArrayList<Card>();
         
+        clearBoard();
+        
         generateAndPlaceCards();
         
         this.lblScore.setText("000000");
         
-        //startAutoSubtractScore();
+        startAutoSubtractScore();
+    }//end startGame
+    
+    
+    public void clearBoard()
+    {
+        myCards.clear();
+        intMyCardMatches = 0;
+        myPreviousCard = null;
+        gamePanel.removeAll();
     }
     
     /**
@@ -108,7 +125,7 @@ public class GameBoard extends javax.swing.JFrame {
                     myCards.add(new JamaicanMeCrazyCard(this));
                     break;
                 case 3:
-                    myCards.add(new MatchDefectCard(this));
+                    myCards.add(new YouKittenMeCard(this));
                     break;
                 case 4:
                     myCards.add(new MatchTimeRelayCard(this));
@@ -117,7 +134,7 @@ public class GameBoard extends javax.swing.JFrame {
                     myCards.add(new ReeperOfTimeCard(this));
                     break;
                 case 6:
-                    myCards.add(new YouKittenMeCard(this));
+                    myCards.add(new MatchDefectCard(this));
                     break;
             }
         }
@@ -128,7 +145,7 @@ public class GameBoard extends javax.swing.JFrame {
             gamePanel.add(card.getCardPanel());
         
         gamePanel.setBorder(null);
-    }
+    }//end generateAndPlaceCards
     
     /**
      * Adds to the players score
@@ -136,9 +153,9 @@ public class GameBoard extends javax.swing.JFrame {
      */
     public void addScore(int intScoreToAdd)
     {
-        this.intMyScore += intScoreToAdd;
+        this.intMyScore += (intScoreToAdd > 0 && blnIsDouble) ? intScoreToAdd * 2 : intScoreToAdd;
         lblScore.setText(String.valueOf(this.intMyScore));
-    }
+    }//end addScore()
     
     /**
      * Checks if there is already a previous card. If there is check whether this new card matches and 
@@ -174,7 +191,7 @@ public class GameBoard extends javax.swing.JFrame {
              public void run()
              {
                  try {
-                     sleep(550);   // We have to delay in a new thread or else the GUI will 'lock' up until the animation is finished and we miss it
+                     sleep(800);   // We have to delay in a new thread or else the GUI will 'lock' up until the animation is finished and we miss it
                  } catch (InterruptedException ex) {
                      Logger.getLogger(GameBoard.class.getName()).log(Level.SEVERE, null, ex);
                  }
@@ -198,7 +215,7 @@ public class GameBoard extends javax.swing.JFrame {
                 blnIsCheckingCards = false;
              }
          }.start(); 
-    }
+    }//end checkCardMatch()
     
     /**
      * Starts a timer that will subtract from the player's score every so often based on difficulty.
@@ -209,7 +226,7 @@ public class GameBoard extends javax.swing.JFrame {
         Timer autoTimer = new Timer("AutoSubtract");
         
         
-        this.intMyScoreToSubtractPerTick = -50;
+        this.intMyScoreToSubtractPerTick = -10;
         
         ScoreTimer task = new ScoreTimer(this){
             @Override
@@ -218,7 +235,7 @@ public class GameBoard extends javax.swing.JFrame {
             }
         };
         autoTimer.scheduleAtFixedRate(task, 0, 2000);
-    }
+    }//end startAutoSubractScore
     
     /**
      * Gets a list of cards based on the boolean argument.
@@ -227,8 +244,25 @@ public class GameBoard extends javax.swing.JFrame {
      */
     public ArrayList<Card> getCards(boolean blnOnlyMatchedCards)
     {
-        throw new UnsupportedOperationException();
-    }
+        Iterator it = this.myCards.iterator();
+        ArrayList<Card> retList = new ArrayList<>();
+        
+        while(it.hasNext())
+        {
+            Card theCard = (Card)it.next();
+            if(theCard instanceof NormalCard)
+            {
+                if(((NormalCard)theCard).isMatched() == blnOnlyMatchedCards)
+                    retList.add(theCard);
+            }
+            else if (theCard instanceof SpecialCard)
+            {
+                if(((SpecialCard)theCard).isActivated() == blnOnlyMatchedCards)
+                    retList.add(theCard);
+            }
+        }
+        return retList;   
+    }//end getCards
     
     /**
      * Gets an ArrayList off all of the boards cards
@@ -237,7 +271,7 @@ public class GameBoard extends javax.swing.JFrame {
     public ArrayList<Card> getAllCards()
     {
         return this.myCards;
-    }
+    }//end getAllCards
     
     /**
      * Called when the score in the timer thread drops to or below zero or all matches are made. 
@@ -246,7 +280,7 @@ public class GameBoard extends javax.swing.JFrame {
     private void endGame()
     {
         
-    }
+    }//end endGame
     
     /**
      * Calculates and shows the final score based on the difficulty and score left.
@@ -254,18 +288,48 @@ public class GameBoard extends javax.swing.JFrame {
     private void calculateAndShowFinalScore()
     {
         
+    }//end calculateAndShowFinalScore
+    
+    /**
+     *
+     * @param theColor
+     */
+    public void setPanelColor(Color theColor)
+    {
+        gamePanel.setBackground(theColor);
     }
     
+    public Color getPanelColor()
+    {
+        return gamePanel.getBackground();
+    }
     
     public int getScoreToSubtract()
     {
         return this.intMyScoreToSubtractPerTick * intMyDifficulty;
-    }
+    }//end getScoreToSubtract()
     
     public boolean getIsCheckingCards()
     {
         return blnIsCheckingCards;
-    }
+    }//end getIsCheckingCards
+    
+    public boolean isBlnIsDouble() {
+        return blnIsDouble;
+    }//end isBlnIsDouble
+
+    public void setBlnIsDouble(boolean blnIsDouble) {
+        this.blnIsDouble = blnIsDouble;
+    }//end setBlnIsDouble
+    
+    public int getIntMyCardMatches() {
+        return intMyCardMatches;
+    }//end getINtMyCardMatches
+
+    public void setIntMyCardMatches(int intMyCardMatches) {
+        this.intMyCardMatches = intMyCardMatches;
+    }//end setIntMyCardMatches
+    
     
     //<editor-fold defaultstate="collapsed" desc="UI Code">
     

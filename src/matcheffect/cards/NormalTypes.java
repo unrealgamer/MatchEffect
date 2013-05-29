@@ -5,17 +5,17 @@ package matcheffect.cards;
  * @author Shane
  */
 public enum NormalTypes {
-    RED("Galaxy2.jpg", 50),
-    ORANGE("YGBKM.jpg", 100),
-    YELLOW("Galaxy1.jpg", 50),
-    GREEN("Jamaican.jpg", 100),
-    BLUE("location", 50),
-    PURPLE("location", 100),
-    CIRCLE("location", 50),
-    SQUARE("location", 100),
-    TRIANLGE("location", 50),
-    STAR("location", 100),
-    HEXAGON("location", 50);
+    RED("Resources/Galaxy1.jpg", 50),
+    ORANGE("Resources/Galaxy2.jpg", 100),
+    YELLOW("Resources/Galaxy3.jpg", 50),
+    GREEN("Resources/Galaxy4.jpg", 100),
+    BLUE("Resources/Galaxy5.jpg", 50),
+    PURPLE("Resources/Galaxy6.jpg", 100),
+    CIRCLE("Resources/Galaxy7.jpg", 50),
+    SQUARE("Resources/Galaxy8.jpg", 100),
+    TRIANLGE("Resources/Galaxy9.jpg", 50),
+    STAR("Resources/Galaxy10.jpg", 100),
+    HEXAGON("Resources/Galaxy11.jpg", 50);
     
     private final String strImageLoc;
     private final int intScoreToAdd;

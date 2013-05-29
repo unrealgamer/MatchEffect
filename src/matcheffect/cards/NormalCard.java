@@ -31,7 +31,7 @@ public class NormalCard implements Card{
     
     @Override
     public void doAction() {
-        if(!this.isMatched() && !this.myGameBoard.getIsCheckingCards())
+        if(!this.isMatched() && !this.myGameBoard.getIsCheckingCards() && !this.myCardPanel.isBlnIsFlipping())
             myGameBoard.checkCardMatch(this);
     }
 
