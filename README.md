@@ -3,7 +3,7 @@ MatchEffect Team 3 Period 5 (AP Computer Science 2012-13)
 
 Introduction
 ===========
-Match Effect™ is our groups take on the traditional card matching game. How this game will be played is, that the game will start with a large board area. On this area there will be a select amount of cards that will be face down and once clicked they will flip themselves. This will reveal an image which will need to be matched with another card of the same image and type. Once all cards are matched the game will be over and the players score will be calculated using our scoring system. 
+Match Effect is our groups take on the traditional card matching game. How this game will be played is, that the game will start with a large board area. On this area there will be a select amount of cards that will be face down and once clicked they will flip themselves. This will reveal an image which will need to be matched with another card of the same image and type. Once all cards are matched the game will be over and the players score will be calculated using our scoring system. 
 Special Cards
 ===========
 To make our game unique we are going to add specials cards which will be an important and luck driven part of the game. These special cards will have effects that will positively and/or negatively affect the player’s overall points and gameplay experience making it unique for the traditional matching card game. 
